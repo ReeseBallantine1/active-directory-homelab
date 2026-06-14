@@ -1,0 +1,16 @@
+{
+  "groups": [
+    {
+      "name": "IT Support"
+    }
+  ],
+  "users": [
+    {
+      "name": "Reese Ballantine",
+      "password": "Password123!",
+      "groups": [
+        "IT Support"
+      ]
+    }
+  ]
+}
