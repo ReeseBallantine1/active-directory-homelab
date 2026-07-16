@@ -1,7 +1,13 @@
-param([Parameter(Mandatory=$true)] $JSONFile)
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$JSONFile
+)
 
 function CreateADUser {
-    param([Parameter(Mandatory=$true)] $userObject)
+    param(
+        [Parameter(Mandatory=$true)]
+        $userObject
+    )
 
     $name = $userObject.name
     $password = $userObject.password
