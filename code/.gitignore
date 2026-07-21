@@ -2,10 +2,6 @@
 out.json
 ad_schema.json
 
-# Temporary files
-1
-2
-
 # Sensitive data
 data/passwords.txt
 
