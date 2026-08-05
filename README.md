@@ -1,157 +1,288 @@
-# Active Directory Homelab
+# Windows Server 2022 Active Directory Homelab
 
-## Overview
-
-This project demonstrates the deployment of a Windows Server 2022 Active Directory environment in a Hyper-V virtual lab. The environment includes a Windows Server 2022 Server Core domain controller, DNS services, a Windows 11 domain-joined workstation, and PowerShell automation for provisioning Active Directory users.
-
-The objective of this lab was to gain hands-on experience with enterprise Windows infrastructure, Active Directory administration, PowerShell scripting, and troubleshooting common domain and networking issues.
+> Enterprise Active Directory lab built using **Windows Server 2022**, **Windows 11**, **Hyper-V**, and **PowerShell automation**.
 
 ---
 
-## Features
+# Project Overview
 
-- Windows Server 2022 Server Core Domain Controller
-- Active Directory Domain Services (AD DS)
-- DNS configuration and management
-- Windows 11 domain-joined workstation
-- Hyper-V virtualized lab environment
-- PowerShell-based Active Directory user provisioning
-- Remote administration using RSAT
-- JSON-driven user creation
+This project demonstrates the deployment of a complete Windows Server 2022 Active Directory environment running on Hyper-V.
+
+The lab was built to develop practical Windows infrastructure skills including Active Directory Domain Services (AD DS), DNS configuration, PowerShell automation and enterprise Windows administration.
+
+To extend the project beyond a standard tutorial, custom PowerShell scripts were developed to automatically provision Active Directory users from JSON and remove them using an **Undo** function, allowing repeatable testing without rebuilding the environment.
 
 ---
 
-## Technologies Used
+# Lab Environment
 
-- Windows Server 2022 (Server Core)
-- Windows 11
-- Hyper-V
-- Active Directory Domain Services (AD DS)
-- DNS
-- PowerShell
-- PowerShell Remoting
-- RSAT
-- JSON
+| Component | Technology |
+|-----------|------------|
+| Hypervisor | Hyper-V |
+| Domain Controller | Windows Server 2022 Server Core |
+| Client Machine | Windows 11 |
+| Domain | lab.local |
+| Active Directory | AD DS |
+| DNS | Active Directory Integrated |
+| Automation | PowerShell |
+| Version Control | Git & GitHub |
 
 ---
 
-## Project Structure
+# Features
 
-```text
-active-directory-homelab/
-├── 01_install_dc/
-├── code/
-│   ├── gen_ad.ps1
-│   ├── random_domain.ps1
-│   ├── .gitignore
-│   └── data/
-├── screenshots/
-└── README.md
+| Feature | Status |
+|---------|:------:|
+| Windows Server 2022 Deployment | ✅ |
+| Hyper-V Lab Environment | ✅ |
+| Active Directory Domain Services | ✅ |
+| DNS Configuration | ✅ |
+| Static IP Configuration | ✅ |
+| Windows 11 Domain Join | ✅ |
+| PowerShell User Provisioning | ✅ |
+| JSON User Generation | ✅ |
+| Undo Function | ✅ |
+| PowerShell Remoting | ✅ |
+
+---
+
+# Project Objectives
+
+- Deploy Windows Server 2022 Server Core
+- Configure Active Directory Domain Services
+- Configure DNS
+- Create a new Active Directory Forest
+- Join a Windows 11 workstation to the domain
+- Automate Active Directory user provisioning
+- Implement repeatable user removal using PowerShell
+- Demonstrate PowerShell Remoting between hosts
+
+---
+
+# Active Directory Installation
+
+Install Active Directory Domain Services:
+
+```powershell
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
 ```
 
 ---
 
-## Lab Objectives
+# Create the Domain
 
-- Deploy a Windows Server 2022 Server Core Domain Controller
-- Install and configure Active Directory Domain Services (AD DS)
-- Configure DNS for domain services
-- Join a Windows 11 workstation to the domain
-- Automate Active Directory user creation with PowerShell
-- Manage Active Directory remotely using RSAT
-- Practice troubleshooting DNS and domain connectivity
+A new Active Directory forest was created.
+
+**Domain**
+
+```
+lab.local
+```
+
+**NetBIOS**
+
+```
+LAB
+```
 
 ---
 
-## Lab Screenshots
+# Join Windows 11 to the Domain
 
-### Hyper-V Environment
+```powershell
+Add-Computer -DomainName lab.local -Credential LAB\Administrator -Restart
+```
+
+---
+
+# PowerShell Automation
+
+The project includes a custom PowerShell automation script capable of:
+
+- Reading users from JSON
+- Automatically generating usernames
+- Creating Active Directory users
+- Assigning passwords
+- Creating User Principal Names (UPNs)
+- Reporting successful and failed operations
+- Removing generated users using an Undo switch
+
+Create users:
+
+```powershell
+.\gen_ad.ps1 .\new.json
+```
+
+Undo generated users:
+
+```powershell
+.\gen_ad.ps1 .\new.json -Undo
+```
+
+---
+
+# Screenshots
+
+## Hyper-V Lab
 
 ![Hyper-V Lab](screenshots/hyperv-lab.png)
 
-### Windows Server 2022 Server Core
+---
 
-![Server Core](screenshots/ServerCore.png)
+## Windows Server 2022 Server Core
 
-### Windows 11 Joined to the Domain
-
-![Domain Join](screenshots/domain-join-success.png)
-
-### DNS Resolution
-
-![DNS Resolution](screenshots/dns-resolution.png)
-
-### Automated Active Directory User Provisioning
-
-![User Provisioning](screenshots/ad-user-created.png)
-
-### Active Directory Users and Computers
-
-![ADUC](screenshots/Active-Directory-Users-and-Computers.png)
-
-### Domain User Verification
-
-![Whoami](screenshots/Whoami.png)
+![Server Core](screenshots/server-core.png)
 
 ---
 
-## PowerShell Automation
+## Windows 11 Successfully Joined to the Domain
 
-The lab includes PowerShell scripts that automate Active Directory user provisioning from a JSON schema. The provisioning script includes basic error handling to report failed account creation and improve reliability during bulk user creation.
+![Domain Join](screenshots/domain-join-success.png)
 
-Example:
+---
 
-```powershell
-.\gen_ad.ps1 .\ad_schema.json
+## Windows 11 Domain Joined
+
+![Domain Joined](screenshots/domain-joined.png)
+
+---
+
+## DNS Resolution
+
+![DNS Resolution](screenshots/dns-resolution.png)
+
+---
+
+## Active Directory Users and Computers
+
+![Active Directory Users](screenshots/ad-users-list.png)
+
+---
+
+## PowerShell User Provisioning
+
+![PowerShell User Creation](screenshots/ad-user-created.png)
+
+---
+
+## PowerShell Undo Function
+
+The automation supports complete rollback of all generated Active Directory users, allowing the lab to be reset without restoring a Hyper-V checkpoint.
+
+![Undo Function](screenshots/undo-function.png)
+
+---
+
+## User Verification
+
+![User Verification](screenshots/user-verification.png)
+
+---
+
+# Skills Demonstrated
+
+- Windows Server 2022
+- Active Directory Domain Services (AD DS)
+- Windows Server Core
+- DNS
+- Hyper-V
+- Windows 11
+- PowerShell
+- PowerShell Remoting (WinRM)
+- JSON
+- Active Directory Administration
+- Domain Joining
+- Infrastructure Automation
+- Windows Networking
+- Git
+- GitHub
+
+---
+
+# What I Learned
+
+During this project I gained practical experience with:
+
+- Deploying Windows Server Core
+- Configuring Active Directory Domain Services
+- Configuring DNS for domain environments
+- Joining Windows clients to a domain
+- Automating Active Directory administration with PowerShell
+- Using JSON to provision Active Directory users
+- Managing remote Windows servers using PowerShell Remoting
+- Creating reusable infrastructure automation
+- Implementing rollback functionality using an Undo switch
+- Documenting enterprise infrastructure projects using GitHub
+
+---
+
+# Repository Structure
+
+```text
+active-directory-homelab
+│
+├── code
+│   ├── gen_ad.ps1
+│   ├── random_domain.ps1
+│   ├── new.json
+│
+├── screenshots
+│   ├── ad-user-created.png
+│   ├── ad-users-list.png
+│   ├── dns-resolution.png
+│   ├── domain-join-success.png
+│   ├── domain-joined.png
+│   ├── hyperv-lab.png
+│   ├── server-core.png
+│   ├── undo-function.png
+│   └── user-verification.png
+│
+├── README.md
+│
+└── LICENSE
 ```
 
 ---
 
-## Skills Demonstrated
+# Generated Files
 
-- Active Directory Administration
-- Windows Server Administration
-- Server Core Management
-- DNS Configuration
-- Domain Joining
-- Hyper-V Administration
-- PowerShell Scripting
-- PowerShell Remoting
-- RSAT Administration
-- Active Directory User Provisioning
-- Windows Networking
-- Troubleshooting
+The following generated files are intentionally excluded from GitHub:
 
----
+- out.json
+- ad_schema.json
+- data/passwords.txt
 
-## Key Outcomes
+Generate your own dataset using:
 
-- Successfully deployed a Windows Server 2022 Server Core Domain Controller.
-- Configured Active Directory Domain Services and DNS.
-- Joined a Windows 11 workstation to the Active Directory domain.
-- Automated Active Directory user provisioning with PowerShell.
-- Verified authentication using a standard domain user account.
-- Managed Active Directory remotely using RSAT.
-- Diagnosed and resolved DNS and domain connectivity issues.
+```powershell
+.\random_domain.ps1 -OutputJSONFile .\out.json
+```
 
 ---
 
-## What I Learned
+# Future Improvements
 
-Through building this homelab I gained practical experience with:
-
-- Deploying and configuring a Windows Server 2022 Server Core Domain Controller
-- Configuring Active Directory Domain Services (AD DS) and DNS
-- Joining Windows clients to an Active Directory domain
-- Managing Active Directory remotely using RSAT
-- Automating user provisioning with PowerShell
-- Troubleshooting DNS configuration, domain joins, and authentication issues
-- Using Git and GitHub to document and publish technical projects
+- Group Policy automation
+- Organisational Unit (OU) creation
+- Security Group automation
+- Home folder provisioning
+- Logon scripts
+- Microsoft Entra ID integration
+- Azure AD Connect
+- Group Managed Service Accounts (gMSA)
 
 ---
 
-## Acknowledgements
+# Author
 
-This homelab was built for hands-on learning and practical experience with Windows Server, Active Directory, PowerShell automation, and enterprise system administration.
+## Reese Ballantine
 
-The user provisioning automation was inspired by John Hammond's Active Directory homelab tutorials and adapted for this project.
+IT Support Engineer | Windows Server | Active Directory | PowerShell | Hyper-V | Microsoft Intune | Microsoft 365
+
+### LinkedIn
+
+https://www.linkedin.com/in/reese-ballantine-466a88343/
+
+### GitHub
+
+https://github.com/ReeseBallantine1/active-directory-homelab
