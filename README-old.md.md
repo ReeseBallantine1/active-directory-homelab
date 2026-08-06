@@ -1,6 +1,6 @@
 # Windows Server 2022 Active Directory Homelab
 
-> Enterprise Active Directory lab built using **Windows Server 2022**, **Windows 11**, **Hyper-V**, **Group Policy**, and **PowerShell automation**.
+> Enterprise Active Directory lab built using **Windows Server 2022**, **Windows 11**, **Hyper-V**, and **PowerShell automation**.
 
 ---
 
@@ -8,7 +8,7 @@
 
 This project demonstrates the deployment of a complete Windows Server 2022 Active Directory environment running on Hyper-V.
 
-The lab was built to develop practical Windows infrastructure skills including Active Directory Domain Services (AD DS), DNS configuration, Group Policy Management, PowerShell automation and enterprise Windows administration.
+The lab was built to develop practical Windows infrastructure skills including Active Directory Domain Services (AD DS), DNS configuration, PowerShell automation and enterprise Windows administration.
 
 To extend the project beyond a standard tutorial, custom PowerShell scripts were developed to automatically provision Active Directory users from JSON and remove them using an **Undo** function, allowing repeatable testing without rebuilding the environment.
 
@@ -24,7 +24,6 @@ To extend the project beyond a standard tutorial, custom PowerShell scripts were
 | Domain | lab.local |
 | Active Directory | AD DS |
 | DNS | Active Directory Integrated |
-| Group Policy | Group Policy Management Console (GPMC) |
 | Automation | PowerShell |
 | Version Control | Git & GitHub |
 
@@ -43,9 +42,7 @@ To extend the project beyond a standard tutorial, custom PowerShell scripts were
 | PowerShell User Provisioning | ✅ |
 | JSON User Generation | ✅ |
 | Undo Function | ✅ |
-| PowerShell Remoting (WinRM) | ✅ |
-| Group Policy Management (GPMC) | ✅ |
-| Group Policy Deployment and Validation | ✅ |
+| PowerShell Remoting | ✅ |
 
 ---
 
@@ -54,13 +51,11 @@ To extend the project beyond a standard tutorial, custom PowerShell scripts were
 - Deploy Windows Server 2022 Server Core
 - Configure Active Directory Domain Services
 - Configure DNS
-- Create a new Active Directory forest
+- Create a new Active Directory Forest
 - Join a Windows 11 workstation to the domain
 - Automate Active Directory user provisioning
 - Implement repeatable user removal using PowerShell
 - Demonstrate PowerShell Remoting between hosts
-- Configure and deploy Group Policy Objects (GPOs)
-- Validate policy application using `gpupdate` and `gpresult`
 
 ---
 
@@ -80,13 +75,13 @@ A new Active Directory forest was created.
 
 **Domain**
 
-```text
+```
 lab.local
 ```
 
 **NetBIOS**
 
-```text
+```
 LAB
 ```
 
@@ -102,7 +97,7 @@ Add-Computer -DomainName lab.local -Credential LAB\Administrator -Restart
 
 # PowerShell Automation
 
-The project includes custom PowerShell automation capable of:
+The project includes a custom PowerShell automation script capable of:
 
 - Reading users from JSON
 - Automatically generating usernames
@@ -118,73 +113,11 @@ Create users:
 .\gen_ad.ps1 .\new.json
 ```
 
-Remove generated users:
+Undo generated users:
 
 ```powershell
 .\gen_ad.ps1 .\new.json -Undo
 ```
-
----
-
-# Group Policy Management
-
-To demonstrate centralised Windows administration, I created and deployed a custom Group Policy Object within the `lab.local` domain.
-
-The policy was configured, linked to the domain, applied to a standard Active Directory user account and validated using Microsoft Group Policy tools.
-
-## Create and Link a Group Policy Object
-
-A new Group Policy Object named **Workstation Security Policy** was created and linked to the `lab.local` domain.
-
-![Group Policy Management](screenshots/group-policy-management.png)
-
-![Group Policy Overview](screenshots/group-policy-overview.png)
-
-![Workstation Security Policy](screenshots/Workstation-Security-Policy.png)
-
-## Configure the Policy
-
-The following policy was enabled:
-
-```text
-User Configuration
-└── Policies
-    └── Administrative Templates
-        └── Control Panel
-            └── Prohibit access to Control Panel and PC settings
-```
-
-![Group Policy Configuration](screenshots/gpo-control-panel-policy.png)
-
-## Deploy the Group Policy
-
-After signing in to the Windows 11 client as a standard Active Directory user, the policy was refreshed using:
-
-```powershell
-gpupdate /force
-```
-
-The computer and user policy updates completed successfully.
-
-![Group Policy Update](screenshots/gpupdate-success.png)
-
-## Validate Group Policy Deployment
-
-The applied Group Policy Objects were verified using:
-
-```powershell
-gpresult /r
-```
-
-The results confirmed that **Workstation Security Policy** was successfully applied.
-
-![Group Policy Verification](screenshots/gpresult-verification.png)
-
-## Policy Enforcement Test
-
-Access to Control Panel was tested while signed in as a standard domain user. Windows successfully blocked access, confirming that the policy was being enforced.
-
-![Control Panel Blocked](screenshots/control-panel-blocked.png)
 
 ---
 
@@ -234,7 +167,7 @@ Access to Control Panel was tested while signed in as a standard domain user. Wi
 
 ## PowerShell Undo Function
 
-The automation supports rollback of generated Active Directory users, allowing the lab to be reset without restoring a Hyper-V checkpoint.
+The automation supports complete rollback of all generated Active Directory users, allowing the lab to be reset without restoring a Hyper-V checkpoint.
 
 ![Undo Function](screenshots/undo-function.png)
 
@@ -254,9 +187,6 @@ The automation supports rollback of generated Active Directory users, allowing t
 - DNS
 - Hyper-V
 - Windows 11
-- Group Policy Management Console (GPMC)
-- Group Policy Objects (GPOs)
-- Windows Security Policy Administration
 - PowerShell
 - PowerShell Remoting (WinRM)
 - JSON
@@ -282,10 +212,6 @@ During this project I gained practical experience with:
 - Managing remote Windows servers using PowerShell Remoting
 - Creating reusable infrastructure automation
 - Implementing rollback functionality using an Undo switch
-- Creating and linking Group Policy Objects
-- Deploying Group Policies to domain users
-- Validating Group Policy deployment using `gpupdate` and `gpresult`
-- Testing and troubleshooting Group Policy application
 - Documenting enterprise infrastructure projects using GitHub
 
 ---
@@ -298,28 +224,21 @@ active-directory-homelab
 ├── code
 │   ├── gen_ad.ps1
 │   ├── random_domain.ps1
-│   └── data
+│   ├── new.json
 │
 ├── screenshots
 │   ├── ad-user-created.png
 │   ├── ad-users-list.png
-│   ├── control-panel-blocked.png
 │   ├── dns-resolution.png
 │   ├── domain-join-success.png
 │   ├── domain-joined.png
-│   ├── gpo-control-panel-policy.png
-│   ├── gpresult-verification.png
-│   ├── gpupdate-success.png
-│   ├── group-policy-management.png
-│   ├── group-policy-overview.png
 │   ├── hyperv-lab.png
 │   ├── server-core.png
 │   ├── undo-function.png
-│   ├── user-verification.png
-│   └── Workstation-Security-Policy.png
+│   └── user-verification.png
 │
-├── .gitignore
 ├── README.md
+│
 └── LICENSE
 ```
 
@@ -329,10 +248,9 @@ active-directory-homelab
 
 The following generated files are intentionally excluded from GitHub:
 
-- `out.json`
-- `code/new.json`
-- `code/ad_schema.json`
-- `code/data/passwords.txt`
+- out.json
+- ad_schema.json
+- data/passwords.txt
 
 Generate your own dataset using:
 
@@ -344,7 +262,8 @@ Generate your own dataset using:
 
 # Future Improvements
 
-- Organisational Unit (OU) automation
+- Group Policy automation
+- Organisational Unit (OU) creation
 - Security Group automation
 - Home folder provisioning
 - Logon scripts
